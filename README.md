@@ -1,3 +1,14 @@
+# README (Team 10)
+#### Assignment Instructions are the included file: *"Spring_2025_CSE486_Project1_shell.pdf"*
+#### Git tutorial is here: https://www.w3schools.com/git/
+Move through the tutorial until you've dealt with the merge conflict, as well as pushed and pulled from Github. Definitely don't need to finish the whole thing.
+
+#### Branch Protocol
+Never git --force. As a safety, make a temporary copy of the whole directory if(probably when!) we get a merge conflict or something feels risky.
+When you reach a checkpoint --- commit AND push so we can all pull and use your work.
+
+Let's name the branches after the features they're working with. We could also do it by our names... but I think this kind of defeats the magic of GitHub: that we can all individually work on many features at the same time, or that some people can even tag-team a branch between commits.
+
 # README (For Tinyshell)
 
 ## Commands 
