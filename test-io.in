@@ -1,0 +1,2 @@
+echo "Welcome to CSE 486!" > out-1.log
+/bin/kill -L > out-2.log

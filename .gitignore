@@ -1,0 +1,4 @@
+# Welcome to the .gitignore
+# Place the files names we'd like to not commit to GitHub here:
+
+*.out
