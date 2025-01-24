@@ -204,36 +204,40 @@ unsigned char process_builtin_commands(cmd_string *C)
   {
     /* << YOUR CODE GOES HERE >> */
     // YCGH: Write code for processing the command cd
-
-    // One arg --> "cd". Else try to change directory, knowing any syntax errors are auto handled.
+    // One arg --> "cd". Else try to change directory, knowing any syntax errors are handled.
     int execStatus = 0;
-    if (C->arg_count == 1){ execStatus = chdir(getenv("HOME")); }
-    else { execStatus = chdir(C->args[1]); }
-    if (execStatus == -1) { PRINT_ERROR_SYSCALL(""); }
-
+    if (C->arg_count == 1){ 
+      execStatus = chdir(getenv("HOME")); 
+    }
+    else { 
+      execStatus = chdir(C->args[1]); 
+    }
+    
+    if (execStatus == -1) { PRINT_ERROR_SYSCALL("chdir"); }
     return (unsigned char)1;
   }
   else if (strcmp(C->cmd, "pwd") == 0)
   {
     /* << YOUR CODE GOES HERE >> */
     // YCGH: Write code for processing the command pwd
-
     // Arbitrarily deciding the max filepath size will be same size as max terminal input size.
     char currDirectory[LINESZ];
     char * execStatus = getcwd(currDirectory, LINESZ);
-    if (execStatus == NULL) { PRINT_ERROR_SYSCALL(""); }
-    else { printf("%s\n", currDirectory); }
-
+    if (execStatus == NULL) { PRINT_ERROR_SYSCALL("pwd"); }
+    else if (printf("%s\n", currDirectory) < 0) { // this both performs the print and checks status
+      PRINT_ERROR_SYSCALL("print/write");
+    }
     return (unsigned char)1;
   }
   else if (strcmp(C->cmd, "echo") == 0)
   {
     /* << YOUR CODE GOES HERE >> */
     // YCGH: Write code for processing the command echo
-
     // Print all the args after "echo" arg, seperated by a space.
     for (int i = 1; i < C->arg_count; i++){
-      printf("%s ", C->args[i]);
+      if (printf("%s ", C->args[i]) < 0) { // this both performs the print and checks status
+        PRINT_ERROR_SYSCALL("print/write");
+      }
     }
     printf("\n");
 
