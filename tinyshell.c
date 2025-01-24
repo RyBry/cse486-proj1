@@ -230,6 +230,8 @@ unsigned char process_builtin_commands(cmd_string *C)
   {
     /* << YOUR CODE GOES HERE >> */
     // YCGH: Write code for processing the command echo
+
+    // Print all the args after "echo" arg, seperated by a space.
     for (int i = 1; i < C->arg_count; i++){
       printf("%s ", C->args[i]);
     }
