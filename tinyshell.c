@@ -4,7 +4,7 @@
  * You have to add your code to the places where it shows
  * <<YOUR CODE GOES HERE>> or 
  * any comment prefixed by "YCGH: ".
- *
+ * 
  * You do not need to modify/edit/remove the existing code.
  *
  * The source file contains additional comments to explain the code 
@@ -53,7 +53,7 @@
 typedef struct tcommand
 {
   // The actual command to be exectued 
-  char cmd[LINESZ + 2];       
+  char cmd[LINESZ + 2];
   
   // The number of arguments including the command itself
   int arg_count;
@@ -205,6 +205,11 @@ unsigned char process_builtin_commands(cmd_string *C)
     /* << YOUR CODE GOES HERE >> */
     // YCGH: Write code for processing the command cd
 
+    // One arg --> "cd". Else try to change directory, knowing any syntax errors are auto handled.
+    int execStatus = 0;
+    if (C->arg_count == 1){ execStatus = chdir(getenv("HOME")); }
+    else { execStatus = chdir(C->args[1]); }
+    if (execStatus == -1) { PRINT_ERROR_SYSCALL(""); }
 
     return (unsigned char)1;
   }
@@ -213,6 +218,11 @@ unsigned char process_builtin_commands(cmd_string *C)
     /* << YOUR CODE GOES HERE >> */
     // YCGH: Write code for processing the command pwd
 
+    // Arbitrarily deciding the max filepath size will be same size as max terminal input size.
+    char currDirectory[LINESZ];
+    char * execStatus = getcwd(currDirectory, LINESZ);
+    if (execStatus == NULL) { PRINT_ERROR_SYSCALL(""); }
+    else { printf("%s\n", currDirectory); }
 
     return (unsigned char)1;
   }
@@ -220,7 +230,10 @@ unsigned char process_builtin_commands(cmd_string *C)
   {
     /* << YOUR CODE GOES HERE >> */
     // YCGH: Write code for processing the command echo
-
+    for (int i = 1; i < C->arg_count; i++){
+      printf("%s ", C->args[i]);
+    }
+    printf("\n");
 
     return (unsigned char)1;
   }
