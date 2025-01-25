@@ -233,14 +233,36 @@ unsigned char process_builtin_commands(cmd_string *C)
   {
     /* << YOUR CODE GOES HERE >> */
     // YCGH: Write code for processing the command echo
-    // Print all the args after "echo" arg, seperated by a space.
-    for (int i = 1; i < C->arg_count; i++){
-      if (printf("%s ", C->args[i]) < 0) { // this both performs the print and checks status
-        PRINT_ERROR_SYSCALL("print/write");
+    if (C->redirection){
+      // In real terminal, echo "me is " a hippo  "potamous" > mess.txt outputs simply:me is  a hippo potamous
+      // So the output is captured until the > argument, and "" pairs are deleted. A single " is not handled well... so it will not be considered here :).
+      int terminalFD = dup(STDOUT_FILENO); // Now terminal File Description is on both STDOUT(1) and some other fd(terminalFD)
+      int fileFD = open(C->ofile, O_RDWR | O_CREAT, 00700); // manpage says 00700 is RWX
+      dup2(fileFD, STDOUT_FILENO); // close the current FD on STDOUT (one of the terminal's references) and replace it with the new file FD (fileFD)
+      for(int argI = 1; argI < C->arg_count; ++argI){ // print the string(s)
+        // to not print any >"< characters, we go character by character until finding the \0 null terminator for each string 
+        for (char * currChar = C->args[argI]; (*currChar) != '\0'; currChar++){
+          if( (*currChar) != '\"') {
+            if (printf("%c", *currChar) < 0){
+              PRINT_ERROR_SYSCALL("print to stdout"); // this both performs the print and checks status
+            };
+            }
+        }
+        if (argI != C->arg_count -1) {printf(" ");}
       }
+      printf("\n"); // the buffer must be flushed before switching STDOUT!
+      close(fileFD); // done writing so we close the new file back up
+      dup2(terminalFD, STDOUT_FILENO); // restore terminal as the STDOUT file for printf()
+      close(terminalFD); // once again, terminal now occupies STDOUT(1) and some other fd(terminalFD). Close the duplicate.
+    } else {
+      // Print all the args after "echo" arg, seperated by a space.
+      for (int i = 1; i < C->arg_count; i++){
+        if (printf("%s ", C->args[i]) < 0) { // this both performs the print and checks status
+          PRINT_ERROR_SYSCALL("print to stdout");
+        }
+      }
+      printf("\n"); // flush the buffer!
     }
-    printf("\n");
-
     return (unsigned char)1;
   }
   else
