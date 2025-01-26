@@ -327,8 +327,8 @@ int main(int argc, char *argv[])
 
     /* Check if the input command is a built-in command */
     unsigned char r = process_builtin_commands(&C);
-    if (r == 1)
-      continue; 
+    if (r == 1) // 1 = built in. 0 = not built in.
+      continue; // continue means STOP --- DON'T fall through to the next line; mark the current loop as done & cycle back to the top, continuing.
 
     // If we are here, that means the input is not a 
     // built-in command. So we must handle it using fork and execvp
