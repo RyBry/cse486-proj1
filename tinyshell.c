@@ -361,6 +361,37 @@ int main(int argc, char *argv[])
          * Also handle error using PRINT_ERROR_SYSCALL().
          */
 
+        int fd = -1; //initialize file descriptor
+
+        //fork and execute command
+        if (execvp(C.args[0], C.args) == -1)
+        {
+          PRINT_ERROR_SYSCALL("execvp");
+          exit(1);
+        }
+
+        // open file for writing (creating/overwriting)
+        fd = open(C.ofile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+        if (fd < 0) // check for errors opening file
+        {
+          PRINT_ERROR_SYSCALL("open");
+          exit(1);
+        }
+
+        // redirect standard output to the file
+        if (dup2(fd, STDOUT_FILENO) < 0)
+        {
+          PRINT_ERROR_SYSCALL("dup2");
+          close(fd);
+          exit(1);
+        }
+
+        // close file descriptor
+        close(fd);
+
+
+
+
         
       }
 
