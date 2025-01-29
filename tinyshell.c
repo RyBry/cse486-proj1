@@ -225,7 +225,7 @@ unsigned char process_builtin_commands(cmd_string *C)
     char * execStatus = getcwd(currDirectory, LINESZ);
     if (execStatus == NULL) { PRINT_ERROR_SYSCALL("pwd"); }
     else if (printf("%s\n", currDirectory) < 0) { // this both performs the print and checks status
-      PRINT_ERROR_SYSCALL("print/write");
+      PRINT_ERROR_SYSCALL("print to stdout");
     }
     return (unsigned char)1;
   }
