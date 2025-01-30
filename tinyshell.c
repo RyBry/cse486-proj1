@@ -356,17 +356,8 @@ int main(int argc, char *argv[])
          * Also handle error using PRINT_ERROR_SYSCALL().
          */
 
-        int fd = -1; //initialize file descriptor
-
-        //fork and execute command
-        if (execvp(C.args[0], C.args) == -1)
-        {
-          PRINT_ERROR_SYSCALL("execvp");
-          exit(1);
-        }
-
-        // open file for writing (creating/overwriting)
-        fd = open(C.ofile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+        // initalzing
+        int fd = open(C.ofile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
         if (fd < 0) // check for errors opening file
         {
           PRINT_ERROR_SYSCALL("open");
@@ -374,6 +365,7 @@ int main(int argc, char *argv[])
         }
 
         // redirect standard output to the file
+        // okay to never restore since we are in the child process
         if (dup2(fd, STDOUT_FILENO) < 0)
         {
           PRINT_ERROR_SYSCALL("dup2");
@@ -381,13 +373,14 @@ int main(int argc, char *argv[])
           exit(1);
         }
 
-        // close file descriptor
+        // executes command
+        if (execvp(C.args[0], C.args) == -1)
+        {
+          PRINT_ERROR_SYSCALL("execvp");
+          exit(1);
+        }
         close(fd);
 
-
-
-
-        
       }
 
 
